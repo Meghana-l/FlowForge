@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowForge — Enterprise Workflow Intelligence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Serif:wght@300;400&display=swap');
+
+  :root {
+    --blue:       #0f62fe;
+    --blue-dark:  #0043ce;
+    --blue-light: #d0e2ff;
+    --blue-mid:   #a6c8ff;
+    --g10:  #f2f4f8;
+    --g20:  #dde1e6;
+    --g40:  #a8b2bd;
+    --g60:  #697077;
+    --g80:  #343a3f;
+    --g100: #121619;
+    --white: #ffffff;
+    --green: #24a148;
+    --green-light: #defbe6;
+    --purple: #6929c4;
+    --purple-light: #e8daff;
+    --teal: #009d9a;
+    --teal-light: #d9fbfb;
+    --red: #da1e28;
+    --yellow-light: #fff8e1;
+    --yellow-border: #fde68a;
+    --yellow-text: #b45309;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: var(--white);
+    color: var(--g100);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--g100);
+    border-bottom: 1px solid var(--g80);
+    padding: 0 32px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    width: 28px; height: 28px;
+    background: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .brand-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .nav-item {
+    font-size: 12px;
+    color: var(--g40);
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: color 0.1s;
+  }
+
+  .nav-item.active, .nav-item:hover { color: var(--white); }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15,98,254,0.18);
+    border: 1px solid rgba(15,98,254,0.35);
+    border-radius: 2px;
+    padding: 2px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #78a9ff;
+    letter-spacing: 0.06em;
+  }
+
+  .pulse {
+    width: 6px; height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--g100);
+    padding: 64px 32px 56px;
+    border-bottom: 3px solid var(--blue);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(15,98,254,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,98,254,.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .hero-content { position: relative; max-width: 880px; }
+
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 1px;
+    background: var(--blue);
+  }
+
+  .hero-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: clamp(34px, 4.5vw, 50px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title strong { font-weight: 400; color: #78a9ff; }
+
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--g40);
+    max-width: 580px;
+    line-height: 1.65;
+    margin-bottom: 40px;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 1px;
+    background: var(--g80);
+    border: 1px solid var(--g80);
+    width: fit-content;
+  }
+
+  .stat-cell {
+    background: var(--g100);
+    padding: 16px 28px;
+  }
+
+  .stat-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-val span { color: var(--blue); font-size: 16px; }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--g40);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 308px 1fr;
+    min-height: calc(100vh - 48px - 208px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--g10);
+    border-right: 1px solid var(--g20);
+    padding: 28px 24px;
+    position: sticky;
+    top: 48px;
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
+
+  .sb-section { margin-bottom: 28px; }
+
+  .sb-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--g60);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--g20);
+  }
+
+  .form-field { margin-bottom: 16px; }
+
+  .field-label {
+    display: block;
+    font-size: 12px;
+    color: var(--g80);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .req { color: var(--red); margin-left: 2px; }
+
+  select, input, textarea {
+    width: 100%;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--g100);
+    background: var(--white);
+    border: 1px solid var(--g40);
+    border-bottom: 2px solid var(--g80);
+    outline: none;
+    border-radius: 0;
+    transition: border-color .1s;
+  }
+
+  select, input { height: 38px; padding: 0 14px; -webkit-appearance: none; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23697077' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+    cursor: pointer;
+  }
+
+  select:focus, input:focus, textarea:focus {
+    outline: 2px solid var(--blue);
+    outline-offset: 0;
+    border-color: var(--blue);
+  }
+
+  textarea {
+    padding: 10px 14px;
+    resize: vertical;
+    min-height: 72px;
+  }
+
+  .cb-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .cb-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .cb-item input[type="checkbox"] {
+    width: 15px; height: 15px;
+    border: 1px solid var(--g60);
+    cursor: pointer;
+    accent-color: var(--blue);
+    flex-shrink: 0;
+    border-radius: 0;
+  }
+
+  .cb-item label {
+    font-size: 12px;
+    color: var(--g80);
+    cursor: pointer;
+    line-height: 1.4;
+  }
+
+  .run-btn {
+    width: 100%;
+    height: 46px;
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background .15s;
+    margin-top: 20px;
+    letter-spacing: .02em;
+  }
+
+  .run-btn:hover { background: var(--blue-dark); }
+  .run-btn:disabled { background: var(--g40); cursor: not-allowed; }
+
+  /* ── CONTENT ── */
+  .content { padding: 28px 32px; background: var(--white); }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--g20);
+    margin-bottom: 28px;
+    gap: 0;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--g60);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--g100); }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+
+  /* ── PLACEHOLDER ── */
+  .placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 420px;
+    gap: 20px;
+    color: var(--g60);
+    text-align: center;
+  }
+
+  .ph-icon {
+    width: 60px; height: 60px;
+    border: 2px dashed var(--g20);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--g40);
+  }
+
+  .ph-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--g80);
+  }
+
+  .ph-sub { font-size: 13px; max-width: 340px; line-height: 1.6; }
+
+  /* ── LOADING ── */
+  .loading-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 420px;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .loading-state.active { display: flex; }
+
+  .loader-ring {
+    width: 44px; height: 44px;
+    border: 3px solid var(--g20);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    min-width: 260px;
+  }
+
+  .loading-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--g60);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .loading-step.done { color: var(--green); }
+  .loading-step.active { color: var(--blue); }
+
+  /* ── RESULTS ── */
+  .results { display: none; }
+  .results.active { display: block; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .sec-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--g60);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--g20);
+  }
+
+  .sec { margin-bottom: 40px; }
+
+  /* ── EXEC BOX ── */
+  .exec-box {
+    background: var(--g100);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .exec-box::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--blue);
+  }
+
+  .exec-box-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 12px;
+  }
+
+  .exec-box-text {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.75;
+  }
+
+  .exec-box-text strong { color: #78a9ff; font-weight: 400; }
+
+  /* ── PROCESS FLOW ── */
+  .flow-wrap {
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 28px;
+    gap: 0;
+  }
+
+  .flow-step { flex: 1; min-width: 110px; }
+
+  .flow-inner {
+    background: var(--g10);
+    border: 1px solid var(--g20);
+    padding: 14px 10px;
+    text-align: center;
+    height: 100%;
+  }
+
+  .flow-step.ai .flow-inner { background: var(--blue-light); border-color: var(--blue-mid); }
+
+  .flow-num { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--g40); margin-bottom: 4px; }
+  .flow-icon { font-size: 18px; margin-bottom: 4px; }
+  .flow-name { font-size: 11px; font-weight: 500; color: var(--g100); margin-bottom: 3px; line-height: 1.3; }
+  .flow-time { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--g60); }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--g40);
+    font-size: 14px;
+    padding: 0 2px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* ── CARDS 2x2 ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    border: 1px solid var(--g20);
+    padding: 18px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .card-ttl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--g60);
+  }
+
+  .badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .b-red    { background: #fff1f1; color: var(--red); border: 1px solid #ffd7d9; }
+  .b-orange { background: #fff8e1; color: var(--yellow-text); border: 1px solid var(--yellow-border); }
+  .b-blue   { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-mid); }
+  .b-green  { background: var(--green-light); color: var(--green); border: 1px solid #a7f0ba; }
+
+  .card-desc { font-size: 12px; color: var(--g60); line-height: 1.55; }
+
+  /* ── PAIN LIST ── */
+  .pain-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .pain-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: #fff1f1;
+    border-left: 3px solid var(--red);
+  }
+
+  .pain-icon { color: var(--red); font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .pain-title { display: block; font-size: 13px; font-weight: 500; color: var(--g100); margin-bottom: 2px; }
+  .pain-desc { font-size: 12px; color: var(--g60); line-height: 1.45; }
+
+  /* ── REDESIGN HEADER ── */
+  .redesign-hdr {
+    background: var(--g100);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .redesign-hdr-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--white);
+  }
+
+  .redesign-hdr-title strong { color: #78a9ff; font-weight: 400; }
+
+  /* ── AGENT CHIPS ── */
+  .agent-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+
+  .agent-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-light);
+    border: 1px solid #c5b5f0;
+    border-radius: 14px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--purple);
+    font-weight: 500;
+  }
+
+  /* ── AI NARRATIVE ── */
+  .ai-narrative {
+    background: var(--blue-light);
+    border: 1px solid var(--blue-mid);
+    border-left: 4px solid var(--blue);
+    padding: 20px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--g80);
+    font-style: italic;
+  }
+
+  .ai-narrative cite {
+    display: block;
+    margin-top: 10px;
+    font-style: normal;
+    font-size: 10px;
+    color: var(--blue);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── REDESIGNED FLOW WRAPPER ── */
+  .redesign-flow-wrap {
+    border: 2px solid var(--blue);
+    padding: 20px 20px 20px;
+    padding-top: 28px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .redesign-flow-wrap::before {
+    content: 'AI-NATIVE REDESIGN';
+    position: absolute;
+    top: 0; right: 0;
+    background: var(--blue);
+    color: var(--white);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+  }
+
+  /* ── VALUE ── */
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--g20);
+    border: 1px solid var(--g20);
+    margin-bottom: 28px;
+  }
+
+  .value-cell { background: var(--white); padding: 28px 20px; text-align: center; }
+
+  .val-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 34px;
+    font-weight: 500;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .val-lbl {
+    font-size: 11px;
+    color: var(--g60);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .val-sub { font-size: 11px; color: var(--g60); font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── CHART ── */
+  .chart-box {
+    border: 1px solid var(--g20);
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+
+  .chart-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .chart-ttl {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--g60);
+  }
+
+  .legend { display: flex; gap: 16px; }
+
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--g60); }
+
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── ASSUMPTION ── */
+  .assumption {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--yellow-light);
+    border: 1px solid var(--yellow-border);
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--yellow-text);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 12px;
+  }
+
+  /* ── ROADMAP ── */
+  .roadmap-track {
+    position: relative;
+    padding-left: 48px;
+  }
+
+  .roadmap-track::before {
+    content: '';
+    position: absolute;
+    left: 20px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--blue), var(--purple), var(--teal));
+  }
+
+  .rm-quarter { position: relative; margin-bottom: 32px; }
+
+  .rm-dot {
+    position: absolute;
+    left: -36px;
+    top: 5px;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 3px solid var(--white);
+  }
+
+  .rm-dot.d-blue   { background: var(--blue);   box-shadow: 0 0 0 2px var(--blue); }
+  .rm-dot.d-purple { background: var(--purple);  box-shadow: 0 0 0 2px var(--purple); }
+  .rm-dot.d-teal   { background: var(--teal);    box-shadow: 0 0 0 2px var(--teal); }
+
+  .rm-qname {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--g60);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .rm-items { display: flex; flex-direction: column; gap: 8px; }
+
+  .rm-item {
+    background: var(--g10);
+    border: 1px solid var(--g20);
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .rm-item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .rm-item-name { font-size: 13px; font-weight: 500; color: var(--g100); margin-bottom: 2px; }
+  .rm-item-desc { font-size: 12px; color: var(--g60); line-height: 1.4; }
+
+  .rm-tags { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+
+  .tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+  }
+
+  .t-core     { background: var(--blue-light);   color: var(--blue); }
+  .t-agentic  { background: var(--purple-light);  color: var(--purple); }
+  .t-data     { background: var(--teal-light);    color: var(--teal); }
+  .t-infra    { background: var(--g20);           color: var(--g80); }
+
+  /* ── GOVERNANCE ── */
+  .gov-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .gov-card { border: 1px solid var(--g20); padding: 16px; }
+  .gov-icon { font-size: 20px; margin-bottom: 10px; }
+  .gov-title { font-size: 13px; font-weight: 600; color: var(--g100); margin-bottom: 6px; }
+  .gov-text { font-size: 12px; color: var(--g60); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--g10);
+    border-top: 1px solid var(--g20);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-text {
+    font-size: 11px;
+    color: var(--g60);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .footer-link { color: var(--blue); text-decoration: none; }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--g40); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="brand">
+    <div class="brand-mark">⬡</div>
+    <span class="brand-name">FlowForge</span>
+  </div>
+  <nav class="header-nav">
+    <span class="nav-item active">Workflow Analyzer</span>
+    <span class="nav-item">Use Case Library</span>
+    <span class="nav-item">Impact Tracker</span>
+  </nav>
+  <div class="live-badge">
+    <div class="pulse"></div>
+    AI-Powered · Live
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Enterprise Workflow Intelligence</div>
+    <h1 class="hero-title">
+      Redesign enterprise workflows<br>
+      <strong>from first principles.</strong>
+    </h1>
+    <p class="hero-sub">
+      FlowForge assesses current-state enterprise processes, applies zero-based AI-native redesign, quantifies transformation value, and generates actionable multi-quarter roadmaps.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-cell">
+        <div class="stat-val">95<span>%</span></div>
+        <div class="stat-lbl">Enterprises stuck in AI pilot phase</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val">71<span>%</span></div>
+        <div class="stat-lbl">Leaders expect end of human-only workforces</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val">12<span>+</span></div>
+        <div class="stat-lbl">Enterprise domains covered</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Workflow Inputs</div>
+
+      <div class="form-field">
+        <label class="field-label" for="domain">Business Domain <span class="req">*</span></label>
+        <select id="domain">
+          <option value="">Select domain...</option>
+          <option value="finance">Finance & Accounting</option>
+          <option value="hr">Human Resources</option>
+          <option value="procurement">Procurement & Supply Chain</option>
+          <option value="it">IT Operations</option>
+          <option value="sales">Sales & Revenue Operations</option>
+          <option value="legal">Legal & Compliance</option>
+          <option value="customer">Customer Service & CX</option>
+          <option value="reporting">Regulatory Reporting</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="process">Specific Process <span class="req">*</span></label>
+        <select id="process">
+          <option value="">Select process...</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="team-size">Team Size Involved</label>
+        <select id="team-size">
+          <option value="5">1–10 employees</option>
+          <option value="25" selected>10–50 employees</option>
+          <option value="100">50–200 employees</option>
+          <option value="500">200–1,000 employees</option>
+          <option value="2000">1,000+ employees</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="volume">Monthly Transaction Volume</label>
+        <select id="volume">
+          <option value="low">Low (&lt;500/mo)</option>
+          <option value="medium" selected>Medium (500–5,000/mo)</option>
+          <option value="high">High (5,000–50,000/mo)</option>
+          <option value="very-high">Very High (50,000+/mo)</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Current Pain Points</label>
+        <div class="cb-group">
+          <div class="cb-item"><input type="checkbox" id="p1" checked><label for="p1">Manual data entry & re-keying</label></div>
+          <div class="cb-item"><input type="checkbox" id="p2" checked><label for="p2">Slow approval cycles</label></div>
+          <div class="cb-item"><input type="checkbox" id="p3"><label for="p3">Poor data quality / inconsistency</label></div>
+          <div class="cb-item"><input type="checkbox" id="p4"><label for="p4">Siloed systems / lack of integration</label></div>
+          <div class="cb-item"><input type="checkbox" id="p5"><label for="p5">Compliance & audit overhead</label></div>
+          <div class="cb-item"><input type="checkbox" id="p6"><label for="p6">Lack of real-time visibility</label></div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="ctx">Additional Context</label>
+        <textarea id="ctx" placeholder="Describe current systems, specific challenges, or transformation goals..."></textarea>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Analysis Scope</div>
+      <div class="cb-group">
+        <div class="cb-item"><input type="checkbox" id="s1" checked><label for="s1">Current-state assessment</label></div>
+        <div class="cb-item"><input type="checkbox" id="s2" checked><label for="s2">AI-native redesign</label></div>
+        <div class="cb-item"><input type="checkbox" id="s3" checked><label for="s3">ROI & value creation model</label></div>
+        <div class="cb-item"><input type="checkbox" id="s4" checked><label for="s4">Transformation roadmap</label></div>
+        <div class="cb-item"><input type="checkbox" id="s5" checked><label for="s5">AI governance considerations</label></div>
+      </div>
+    </div>
+
+    <button class="run-btn" id="runBtn" onclick="runAnalysis()">
+      Run Transformation Analysis →
+    </button>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('assessment')">Current State Assessment</div>
+      <div class="tab" onclick="switchTab('redesign')">AI-Native Redesign</div>
+      <div class="tab" onclick="switchTab('value')">Value Creation</div>
+      <div class="tab" onclick="switchTab('roadmap')">Transformation Roadmap</div>
+      <div class="tab" onclick="switchTab('governance')">AI Governance</div>
+    </div>
+
+    <div class="placeholder" id="placeholder">
+      <div class="ph-icon">⚙</div>
+      <div class="ph-title">Select a workflow to analyze</div>
+      <p class="ph-sub">Choose a business domain and process from the left panel, then run the analysis to generate an AI-native transformation blueprint.</p>
+    </div>
+
+    <div class="loading-state" id="loadingState">
+      <div class="loader-ring"></div>
+      <div class="loading-steps" id="loadingSteps">
+        <div class="loading-step" id="step1"><span>⏳</span> Analyzing current-state process structure...</div>
+        <div class="loading-step" id="step2"><span>⏳</span> Mapping inefficiency vectors...</div>
+        <div class="loading-step" id="step3"><span>⏳</span> Applying zero-based AI-native design...</div>
+        <div class="loading-step" id="step4"><span>⏳</span> Sizing ROI and value creation model...</div>
+        <div class="loading-step" id="step5"><span>⏳</span> Building transformation roadmap...</div>
+      </div>
+    </div>
+
+    <div class="results" id="results">
+      <div class="tab-panel active" id="panel-assessment">
+        <div id="exec-summary"></div>
+        <div id="assessment-body"></div>
+      </div>
+      <div class="tab-panel" id="panel-redesign">
+        <div id="redesign-body"></div>
+      </div>
+      <div class="tab-panel" id="panel-value">
+        <div id="value-body"></div>
+      </div>
+      <div class="tab-panel" id="panel-roadmap">
+        <div id="roadmap-body"></div>
+      </div>
+      <div class="tab-panel" id="panel-governance">
+        <div id="governance-body"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="footer-text">FlowForge · Enterprise Workflow Intelligence · <a href="https://meghana-l.github.io" class="footer-link" target="_blank">meghana-l.github.io</a></span>
+  <span class="footer-text">Powered by Claude AI</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// ── PROCESS MAP ──
+const processMap = {
+  finance:     ["Invoice-to-Pay (Accounts Payable)", "Record-to-Report (Month-End Close)", "Procure-to-Pay", "Financial Planning & Analysis", "Expense Management & Reimbursement"],
+  hr:          ["Hire-to-Onboard", "Performance Management Cycle", "Benefits Administration", "Payroll Processing", "Learning & Development Enrollment"],
+  procurement: ["Vendor Onboarding & Qualification", "Purchase Order Management", "Contract Lifecycle Management", "Spend Analytics & Reporting", "Supplier Risk Monitoring"],
+  it:          ["Incident Management & Resolution", "Change Management & Deployment", "IT Asset Lifecycle Management", "Access Provisioning & De-provisioning", "Capacity Planning & Cost Optimization"],
+  sales:       ["Lead-to-Opportunity (CRM Hygiene)", "Quote-to-Cash", "Sales Forecasting & Pipeline Review", "Commission Calculation & Payout", "Customer Success & Renewal"],
+  legal:       ["Contract Review & Negotiation", "Regulatory Filing & Compliance", "IP Portfolio Management", "Litigation Support & Discovery", "Policy Update Management"],
+  customer:    ["Tier-1 Support Triage & Resolution", "Customer Complaint Escalation", "Return & Refund Processing", "Proactive Outreach & Retention", "Voice of Customer Analysis"],
+  reporting:   ["SEC/Regulatory Filing Preparation", "ESG & Sustainability Reporting", "Internal Audit & Controls Testing", "Risk Assessment & Reporting", "Management Reporting (MIS)"],
+};
+
+document.getElementById('domain').addEventListener('change', function() {
+  const sel = document.getElementById('process');
+  sel.innerHTML = '<option value="">Select process...</option>';
+  (processMap[this.value] || []).forEach(p => {
+    const o = document.createElement('option');
+    o.value = o.textContent = p;
+    sel.appendChild(o);
+  });
+});
+
+// ── TABS ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.getAttribute('onclick') === `switchTab('${tab}')`);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ── MAIN ──
+let chartInst = null;
+
+async function runAnalysis() {
+  const domain  = document.getElementById('domain').value;
+  const process = document.getElementById('process').value;
+  if (!domain || !process) { alert('Please select a domain and a process.'); return; }
+
+  const teamSize = document.getElementById('team-size').value;
+  const volume   = document.getElementById('volume').value;
+  const ctx      = document.getElementById('ctx').value;
+  const pains    = ['p1','p2','p3','p4','p5','p6']
+    .filter(id => document.getElementById(id).checked)
+    .map(id => document.getElementById(id).nextElementSibling.textContent);
+
+  // Show loading
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('results').classList.remove('active');
+  const ls = document.getElementById('loadingState');
+  ls.classList.add('active');
+  document.getElementById('runBtn').disabled = true;
+
+  // Animate steps
+  const steps = ['step1','step2','step3','step4','step5'];
+  for (let i = 0; i < steps.length; i++) {
+    await delay(420);
+    const el = document.getElementById(steps[i]);
+    el.classList.add('active');
+    el.querySelector('span').textContent = '▶';
+    if (i > 0) {
+      const prev = document.getElementById(steps[i-1]);
+      prev.classList.remove('active');
+      prev.classList.add('done');
+      prev.querySelector('span').textContent = '✓';
+    }
+  }
+
+  // Call API via serverless proxy
+  let data;
+  try {
+    const resp = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain, process, teamSize, volume, pains, context: ctx })
+    });
+    data = await resp.json();
+    if (data.error) throw new Error(data.error);
+  } catch(e) {
+    data = getFallback(domain, process);
+  }
+
+  // Finish loading
+  const last = document.getElementById(steps[steps.length - 1]);
+  last.classList.remove('active'); last.classList.add('done'); last.querySelector('span').textContent = '✓';
+  await delay(300);
+  ls.classList.remove('active');
+  steps.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+    el.querySelector('span').textContent = '⏳';
+  });
+
+  renderAssessment(data, process);
+  renderRedesign(data, process);
+  renderValue(data, teamSize, volume);
+  renderRoadmap(data, process);
+  renderGovernance(data);
+
+  document.getElementById('results').classList.add('active');
+  switchTab('assessment');
+  document.getElementById('runBtn').disabled = false;
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── PROMPT ──
+function buildPrompt(domain, process, teamSize, volume, pains, ctx) {
+  return `Analyze this enterprise workflow for an AI-native transformation assessment:
+
+Domain: ${domain}
+Process: ${process}
+Team size: ${teamSize} employees
+Monthly volume: ${volume}
+Pain points: ${pains.join(', ') || 'none specified'}
+Context: ${ctx || 'none'}
+
+Return ONLY a JSON object with this exact shape:
+{
+  "executive_summary": "2-3 sentence executive summary of the transformation opportunity and expected impact",
+  "current_state": {
+    "steps": [
+      {"name":"Step name","type":"manual|automated|decision","avg_hours_per_cycle":2,"pain_level":"high|medium|low","description":"brief"}
+    ],
+    "total_cycle_time_days": 7,
+    "error_rate_pct": 12,
+    "automation_pct": 18,
+    "manual_touchpoints": 9,
+    "key_inefficiencies": [
+      {"title":"Inefficiency title","impact":"Specific impact description"}
+    ]
+  },
+  "ai_redesign": {
+    "approach": "One paragraph describing the agentic AI redesign approach",
+    "agents_deployed": [
+      {"name":"Agent name","icon":"emoji","function":"what it does"}
+    ],
+    "redesigned_steps": [
+      {"name":"Step name","type":"agent|human|hybrid","avg_hours_per_cycle":0.1,"description":"how AI handles it"}
+    ],
+    "new_cycle_time_days": 0.5,
+    "new_automation_pct": 87,
+    "new_error_rate_pct": 2
+  },
+  "value_creation": {
+    "annual_hours_saved": 12000,
+    "cost_savings_usd_k": 820,
+    "productivity_gain_pct": 64,
+    "error_reduction_pct": 83,
+    "cycle_time_reduction_pct": 93,
+    "roi_quarters": [
+      {"quarter":"Q1 2026","cumulative_savings_k":70},
+      {"quarter":"Q2 2026","cumulative_savings_k":260},
+      {"quarter":"Q3 2026","cumulative_savings_k":530},
+      {"quarter":"Q4 2026","cumulative_savings_k":820}
+    ],
+    "investment_k": 170
+  },
+  "roadmap": {
+    "q1": {"label":"Foundation","items":[{"name":"Initiative","description":"Details","tags":["infra"]}]},
+    "q2": {"label":"Pilot","items":[{"name":"Initiative","description":"Details","tags":["agentic"]}]},
+    "q3": {"label":"Scale","items":[{"name":"Initiative","description":"Details","tags":["data"]}]}
+  },
+  "governance": {
+    "risk_level": "medium",
+    "controls": [
+      {"icon":"🔒","title":"Control name","description":"What it enforces"}
+    ]
+  }
+}`;
+}
+
+// ── RENDER FUNCTIONS ──
+
+function renderAssessment(data, process) {
+  const cs = data.current_state;
+
+  document.getElementById('exec-summary').innerHTML = `
+    <div class="exec-box">
+      <div class="exec-box-label">Executive Summary · ${process}</div>
+      <div class="exec-box-text">${data.executive_summary}</div>
+    </div>`;
+
+  const flowHTML = cs.steps.map((s, i) => {
+    const arrow = i < cs.steps.length - 1 ? `<div class="flow-arrow">›</div>` : '';
+    return `
+      <div class="flow-step ${s.type === 'automated' ? 'ai' : ''}">
+        <div class="flow-inner">
+          <div class="flow-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="flow-icon">${stepIcon(s.type, s.pain_level)}</div>
+          <div class="flow-name">${s.name}</div>
+          <div class="flow-time">${s.avg_hours_per_cycle}h/cycle</div>
+        </div>
+      </div>${arrow}`;
+  }).join('');
+
+  const painHTML = (cs.key_inefficiencies || []).map(k => `
+    <li class="pain-item">
+      <span class="pain-icon">⚠</span>
+      <span>
+        <span class="pain-title">${k.title}</span>
+        <span class="pain-desc">${k.impact}</span>
+      </span>
+    </li>`).join('');
+
+  document.getElementById('assessment-body').innerHTML = `
+    <div class="sec">
+      <div class="sec-title">Current-State Process Flow</div>
+      <div class="flow-wrap">${flowHTML}</div>
+    </div>
+
+    <div class="card-grid sec">
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Cycle Time</span><span class="badge b-red">${cs.total_cycle_time_days} days</span></div>
+        <div class="card-desc">Average end-to-end duration. AI-native benchmark for this process category is under 1 day.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Automation Level</span><span class="badge b-orange">${cs.automation_pct}% automated</span></div>
+        <div class="card-desc">Current automation coverage. AI-native target for this category is 80–90%.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Error Rate</span><span class="badge b-red">${cs.error_rate_pct}% error rate</span></div>
+        <div class="card-desc">Rework rate from manual intervention. Each error triggers 2–4 hours of remediation on average.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Manual Touchpoints</span><span class="badge b-orange">${cs.manual_touchpoints} touchpoints</span></div>
+        <div class="card-desc">Each represents a delay risk, error vector, and cost center in the current workflow.</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Key Inefficiency Vectors</div>
+      <ul class="pain-list">${painHTML}</ul>
+    </div>`;
+}
+
+function renderRedesign(data, process) {
+  const r = data.ai_redesign;
+
+  const chips = (r.agents_deployed || []).map(a =>
+    `<div class="agent-chip"><span>${a.icon}</span><span>${a.name}</span></div>`
+  ).join('');
+
+  const flowHTML = r.redesigned_steps.map((s, i) => {
+    const arrow = i < r.redesigned_steps.length - 1 ? `<div class="flow-arrow">›</div>` : '';
+    const cls = s.type === 'agent' ? 'ai' : '';
+    return `
+      <div class="flow-step ${cls}">
+        <div class="flow-inner">
+          <div class="flow-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="flow-icon">${s.type === 'agent' ? '🤖' : s.type === 'hybrid' ? '⚡' : '👤'}</div>
+          <div class="flow-name">${s.name}</div>
+          <div class="flow-time">${s.avg_hours_per_cycle}h/cycle</div>
+        </div>
+      </div>${arrow}`;
+  }).join('');
+
+  document.getElementById('redesign-body').innerHTML = `
+    <div class="sec">
+      <div class="redesign-hdr">
+        <div class="redesign-hdr-title">Agentic AI Redesign · <strong>${process}</strong></div>
+        <span class="badge b-green">Agentic Orchestration</span>
+      </div>
+      <div class="ai-narrative">
+        ${r.approach}
+        <cite>— FlowForge AI Analysis Engine</cite>
+      </div>
+      <div class="sec-title">Deployed AI Agents</div>
+      <div class="agent-chips">${chips}</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">AI-Native Process Flow</div>
+      <div class="redesign-flow-wrap">
+        <div class="flow-wrap">${flowHTML}</div>
+      </div>
+    </div>
+
+    <div class="card-grid sec">
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">New Cycle Time</span><span class="badge b-green">${r.new_cycle_time_days} days</span></div>
+        <div class="card-desc">AI-native end-to-end duration with agentic orchestration across all steps.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Automation Level</span><span class="badge b-green">${r.new_automation_pct}% automated</span></div>
+        <div class="card-desc">Meets AI-first enterprise benchmark for this process domain.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Error Rate</span><span class="badge b-green">${r.new_error_rate_pct}% error rate</span></div>
+        <div class="card-desc">AI-enforced validation reduces rework to near-zero across all touchpoints.</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-ttl">Human Role</span><span class="badge b-blue">Exception handling</span></div>
+        <div class="card-desc">People focus on judgment, escalations, and decisions that require context.</div>
+      </div>
+    </div>`;
+}
+
+function renderValue(data, teamSize, volume) {
+  const v = data.value_creation;
+  const labels   = (v.roi_quarters || []).map(q => q.quarter);
+  const savings  = (v.roi_quarters || []).map(q => q.cumulative_savings_k);
+  const invLine  = (v.roi_quarters || []).map((_, i) => Math.round(v.investment_k * (1 + i * 0.05)));
+
+  document.getElementById('value-body').innerHTML = `
+    <div class="sec">
+      <div class="assumption">ⓘ Model inputs: ${teamSize} employees · ${volume} volume</div>
+      <div class="value-grid">
+        <div class="value-cell">
+          <div class="val-num">$${fmtK(v.cost_savings_usd_k)}</div>
+          <div class="val-lbl">Annual Cost Savings</div>
+          <div class="val-sub">vs. current-state baseline</div>
+        </div>
+        <div class="value-cell">
+          <div class="val-num">${v.productivity_gain_pct}%</div>
+          <div class="val-lbl">Productivity Gain</div>
+          <div class="val-sub">${fmtHours(v.annual_hours_saved)} hours recaptured/yr</div>
+        </div>
+        <div class="value-cell">
+          <div class="val-num">${v.cycle_time_reduction_pct}%</div>
+          <div class="val-lbl">Cycle Time Reduction</div>
+          <div class="val-sub">${v.error_reduction_pct}% fewer errors</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="chart-box">
+        <div class="chart-hdr">
+          <span class="chart-ttl">Cumulative Value Creation vs. Investment ($K)</span>
+          <div class="legend">
+            <div class="leg-item"><div class="leg-dot" style="background:#0f62fe"></div>Savings</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#da1e28"></div>Investment</div>
+          </div>
+        </div>
+        <canvas id="roiChart" height="260"></canvas>
+      </div>
+    </div>`;
+
+  if (chartInst) chartInst.destroy();
+  chartInst = new Chart(document.getElementById('roiChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Cumulative Savings ($K)', data: savings, borderColor: '#0f62fe', backgroundColor: 'rgba(15,98,254,.08)', borderWidth: 2, pointBackgroundColor: '#0f62fe', pointRadius: 5, fill: true, tension: 0.3 },
+        { label: 'Investment ($K)', data: invLine, borderColor: '#da1e28', backgroundColor: 'rgba(218,30,40,.04)', borderWidth: 2, pointBackgroundColor: '#da1e28', pointRadius: 5, fill: true, borderDash: [6,3], tension: 0.1 }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: $${c.raw}K` } } },
+      scales: {
+        x: { grid: { color: '#dde1e6' }, ticks: { font: { family: "'IBM Plex Mono', monospace", size: 11 }, color: '#697077' } },
+        y: { grid: { color: '#dde1e6' }, ticks: { font: { family: "'IBM Plex Mono', monospace", size: 11 }, color: '#697077', callback: v => `$${v}K` } }
+      }
+    }
+  });
+}
+
+function renderRoadmap(data, process) {
+  const rm = data.roadmap;
+  const quarters = [
+    { key: 'q1', dot: 'd-blue',   label: rm.q1?.label || 'Foundation', period: 'Q1 2026' },
+    { key: 'q2', dot: 'd-purple', label: rm.q2?.label || 'Pilot',       period: 'Q2 2026' },
+    { key: 'q3', dot: 'd-teal',   label: rm.q3?.label || 'Scale',       period: 'Q3 2026' },
+  ];
+
+  const html = quarters.map(q => {
+    const items = (rm[q.key]?.items || []).map(item => {
+      const tags = (item.tags || []).map(t => `<span class="tag t-${t}">${t}</span>`).join('');
+      return `
+        <div class="rm-item">
+          <span class="rm-item-icon">▸</span>
+          <div>
+            <div class="rm-item-name">${item.name}</div>
+            <div class="rm-item-desc">${item.description}</div>
+            <div class="rm-tags">${tags}</div>
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="rm-quarter">
+        <div class="rm-dot ${q.dot}"></div>
+        <div class="rm-qname">${q.period} — ${q.label}</div>
+        <div class="rm-items">${items}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('roadmap-body').innerHTML = `
+    <div class="sec">
+      <div class="sec-title">Transformation Roadmap · ${process}</div>
+      <div class="roadmap-track">${html}</div>
+    </div>`;
+}
+
+function renderGovernance(data) {
+  const g = data.governance;
+  const riskClass = { high: 'b-red', medium: 'b-orange', low: 'b-green' }[g.risk_level] || 'b-blue';
+
+  const cards = (g.controls || []).map(c => `
+    <div class="gov-card">
+      <div class="gov-icon">${c.icon}</div>
+      <div class="gov-title">${c.title}</div>
+      <div class="gov-text">${c.description}</div>
+    </div>`).join('');
+
+  document.getElementById('governance-body').innerHTML = `
+    <div class="sec">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div class="sec-title" style="margin:0;border:none">AI Governance & Risk Framework</div>
+        <span class="badge ${riskClass}">Risk: ${g.risk_level}</span>
+      </div>
+      <div class="gov-grid">${cards}</div>
+    </div>`;
+}
+
+// ── HELPERS ──
+function stepIcon(type, pain) {
+  if (type === 'automated') return '⚡';
+  if (type === 'decision')  return '◈';
+  if (pain === 'high')      return '⚠';
+  return '◉';
+}
+
+function fmtK(n) { return n >= 1000 ? `${(n/1000).toFixed(1)}M` : `${n}K`; }
+function fmtHours(h) { return h >= 1000 ? `${(h/1000).toFixed(1)}K` : h; }
+
+function getFallback(domain, process) {
+  return {
+    executive_summary: `The ${process} workflow carries significant manual overhead that agentic AI can systematically eliminate. Current error rates and cycle times are 4–6× above AI-native benchmarks for this process category. A phased agentic redesign can recover an estimated $820K annually while reducing cycle time by over 90%.`,
+    current_state: {
+      steps: [
+        { name: "Data Collection", type: "manual", avg_hours_per_cycle: 4, pain_level: "high", description: "Manual gathering from disparate sources" },
+        { name: "Validation & Review", type: "manual", avg_hours_per_cycle: 6, pain_level: "high", description: "Human review for accuracy and completeness" },
+        { name: "Approval Routing", type: "manual", avg_hours_per_cycle: 8, pain_level: "high", description: "Email-based approvals with no SLA tracking" },
+        { name: "Data Entry", type: "manual", avg_hours_per_cycle: 3, pain_level: "medium", description: "Manual keying into system of record" },
+        { name: "Reporting", type: "automated", avg_hours_per_cycle: 2, pain_level: "low", description: "Partially automated output generation" }
+      ],
+      total_cycle_time_days: 7,
+      error_rate_pct: 14,
+      automation_pct: 20,
+      manual_touchpoints: 9,
+      key_inefficiencies: [
+        { title: "Manual Re-keying Across Systems", impact: "Staff spend 40% of process time re-entering data that already exists in upstream systems, generating avoidable errors and delays." },
+        { title: "Untracked Email Approvals", impact: "Approval cycles average 3–5 days with no SLA enforcement, routing logic, or escalation path." },
+        { title: "System Silos", impact: "Lack of integration between source systems forces manual reconciliation at every handoff point." }
+      ]
+    },
+    ai_redesign: {
+      approach: "An agentic orchestration layer replaces the manual core of this workflow. An Ingestion Agent continuously pulls from all upstream sources; a Validation Agent applies real-time rules and ML-based anomaly detection; an Orchestration Agent routes approvals with SLA enforcement and auto-escalation. Human touchpoints narrow to genuine exceptions and high-stakes sign-offs.",
+      agents_deployed: [
+        { name: "Ingestion Agent", icon: "📥", function: "Continuous multi-source data collection" },
+        { name: "Validation Agent", icon: "✅", function: "Real-time quality and anomaly checks" },
+        { name: "Orchestration Agent", icon: "🔄", function: "Routing, SLA enforcement, escalation" },
+        { name: "Insight Agent", icon: "📊", function: "Real-time reporting and audit trail" }
+      ],
+      redesigned_steps: [
+        { name: "Auto-Ingest", type: "agent", avg_hours_per_cycle: 0.05, description: "Agent pulls continuously from all sources" },
+        { name: "AI Validation", type: "agent", avg_hours_per_cycle: 0.05, description: "Rules + ML validation in seconds" },
+        { name: "Smart Routing", type: "agent", avg_hours_per_cycle: 0.05, description: "Autonomous routing, exceptions flagged" },
+        { name: "Human Review", type: "human", avg_hours_per_cycle: 0.5, description: "Exceptions and strategic sign-offs only" },
+        { name: "Auto-Close", type: "agent", avg_hours_per_cycle: 0.05, description: "Automated posting and reporting" }
+      ],
+      new_cycle_time_days: 0.4,
+      new_automation_pct: 88,
+      new_error_rate_pct: 2
+    },
+    value_creation: {
+      annual_hours_saved: 13500,
+      cost_savings_usd_k: 820,
+      productivity_gain_pct: 66,
+      error_reduction_pct: 86,
+      cycle_time_reduction_pct: 94,
+      roi_quarters: [
+        { quarter: "Q1 2026", cumulative_savings_k: 65 },
+        { quarter: "Q2 2026", cumulative_savings_k: 255 },
+        { quarter: "Q3 2026", cumulative_savings_k: 530 },
+        { quarter: "Q4 2026", cumulative_savings_k: 820 }
+      ],
+      investment_k: 170
+    },
+    roadmap: {
+      q1: { label: "Foundation", items: [
+        { name: "Data Integration Layer", description: "Connect source systems via APIs; establish unified schema and data contracts.", tags: ["infra"] },
+        { name: "Governance Baseline", description: "Define AI risk framework, audit logging requirements, and access controls.", tags: ["infra"] }
+      ]},
+      q2: { label: "Pilot", items: [
+        { name: "Agent MVP (20% Volume)", description: "Deploy Ingestion and Validation agents in controlled pilot; benchmark against baseline KPIs.", tags: ["agentic", "core"] },
+        { name: "KPI Monitoring Dashboard", description: "Build real-time visibility into cycle time, error rate, and throughput metrics.", tags: ["data"] }
+      ]},
+      q3: { label: "Scale", items: [
+        { name: "Full Agentic Rollout", description: "Scale to 100% volume; retire manual steps; deploy Orchestration and Insight agents.", tags: ["agentic"] },
+        { name: "Continuous Improvement Loop", description: "Embed agent retraining pipelines; connect to enterprise governance tooling.", tags: ["core", "data"] }
+      ]}
+    },
+    governance: {
+      risk_level: "medium",
+      controls: [
+        { icon: "🔒", title: "Model Explainability", description: "All agent decisions logged with confidence scores and reasoning traces. Drift monitoring runs quarterly." },
+        { icon: "👁", title: "Human-in-the-Loop Escalation", description: "Decisions below 85% confidence threshold route automatically to human reviewers with full context." },
+        { icon: "📋", title: "Immutable Audit Trail", description: "Complete, tamper-evident log of all agent actions. Compliant with SOX, GDPR, and internal audit policy." },
+        { icon: "🛡", title: "Data Governance & PII Controls", description: "PII detected and masked before agent processing. Role-based access enforced at the integration layer." }
+      ]
+    }
+  };
+}
+</script>
+</body>
+</html>
